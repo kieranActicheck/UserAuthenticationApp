@@ -27,10 +27,25 @@ namespace UserAuthenticationApp.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays the contact page.
+        /// </summary>
+        /// <returns>The contact page view.</returns>
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
 
+            return View();
+        }
+
+        /// <summary>
+        /// Displays the privacy page.
+        /// </summary>
+        /// <returns>The privacy page view.</returns>
+        public IActionResult Privacy()
+        {
+            ViewData["Title"] = "Privacy Policy";
+            ViewData["Message"] = "Your privacy is important to us at Acticheck. This page outlines how we collect, use, and protect your personal information.";
             return View();
         }
     }
