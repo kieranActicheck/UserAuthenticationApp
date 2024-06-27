@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UserAuthenticationApp.Pages.Account.Login;
 
-namespace UserAuthenticationApp.Pages.Login
+namespace UserAuthenticationApp.Pages.Account.Login
 {
     /// <summary>
     /// Page model for handling user login functionality.

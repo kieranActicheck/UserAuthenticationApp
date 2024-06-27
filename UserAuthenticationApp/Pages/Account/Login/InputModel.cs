@@ -1,4 +1,4 @@
-﻿namespace UserAuthenticationApp.Pages.Login
+﻿namespace UserAuthenticationApp.Pages.Account.Login
 {
     /// <summary>
     /// Represents the data model for user login input.
