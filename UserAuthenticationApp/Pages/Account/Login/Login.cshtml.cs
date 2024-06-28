@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UserAuthenticationApp.Data;
 using UserAuthenticationApp.Pages.Account.Register;
 
 namespace UserAuthenticationApp.Pages.Account.Login
@@ -11,7 +12,8 @@ namespace UserAuthenticationApp.Pages.Account.Login
     public class LoginModel : PageModel
     {
 
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<KieranProjectUser> _signInManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
 
         /// <summary>
         /// Gets or sets the input model for user login credentials.
@@ -22,9 +24,10 @@ namespace UserAuthenticationApp.Pages.Account.Login
         /// <summary>
         /// Initialises a new instance of the <see cref="LoginModel"/> class.
         /// </summary>
-        public LoginModel(SignInManager<IdentityUser> signInManager)
+        public LoginModel(SignInManager<KieranProjectUser> signInManager, UserManager<KieranProjectUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         /// <summary>

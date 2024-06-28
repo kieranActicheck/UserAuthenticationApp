@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using UserAuthenticationApp.Data; // Ensure to import your user type
 
 namespace UserAuthenticationApp.Pages.Account.Register
 {
@@ -10,10 +12,10 @@ namespace UserAuthenticationApp.Pages.Account.Register
     /// </summary>
     public class RegisterModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
+        private readonly SignInManager<KieranProjectUser> _signInManager;
 
-        public RegisterModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public RegisterModel(UserManager<KieranProjectUser> userManager, SignInManager<KieranProjectUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -33,6 +35,7 @@ namespace UserAuthenticationApp.Pages.Account.Register
             /// <summary>
             /// Gets or sets the username.
             /// </summary>
+            [Required]
             public string Username { get; set; }
 
             /// <summary>
@@ -44,7 +47,7 @@ namespace UserAuthenticationApp.Pages.Account.Register
             public string Email { get; set; }
 
             /// <summary>
-            /// Gets or sets the 
+            /// Gets or sets the password.
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
@@ -52,7 +55,7 @@ namespace UserAuthenticationApp.Pages.Account.Register
             public string Password { get; set; }
 
             /// <summary>
-            /// Gets or sets the password confirmation.
+            /// Gets or sets the confirmation of the password.
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
@@ -72,14 +75,14 @@ namespace UserAuthenticationApp.Pages.Account.Register
         /// Handles POST requests when the registration form is submitted.
         /// </summary>
         /// <param name="returnUrl">Optional return URL after successful registration.</param>
-        /// <returns>A task representing hte asynchronous operation.</returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Username, Email = Input.Email };
+                var user = new KieranProjectUser { UserName = Input.Username, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -94,6 +97,7 @@ namespace UserAuthenticationApp.Pages.Account.Register
                 }
             }
 
+            // If ModelState is not valid, return the page to show validation errors
             return Page();
         }
     }
