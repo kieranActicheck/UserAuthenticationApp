@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using UserAuthenticationApp.Data;
+
 namespace UserAuthenticationApp
 {
     public class Program
@@ -8,6 +12,15 @@ namespace UserAuthenticationApp
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            // Configure DbContext
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Add Identity services
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
@@ -24,6 +37,7 @@ namespace UserAuthenticationApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();
