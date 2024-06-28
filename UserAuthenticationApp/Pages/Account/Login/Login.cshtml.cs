@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using UserAuthenticationApp.Pages.Account.Login;
+using UserAuthenticationApp.Pages.Account.Register;
 
 namespace UserAuthenticationApp.Pages.Account.Login
 {
