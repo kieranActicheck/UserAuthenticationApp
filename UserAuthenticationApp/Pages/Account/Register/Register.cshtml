@@ -12,20 +12,90 @@
         <input asp-for="Input.Username" class="form-control" />
         <span asp-validation-for="Input.Username" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Input.Email"></label>
         <input asp-for="Input.Email" class="form-control" />
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Input.Password"></label>
-        <input asp-for="Input.Password" class="form-control" />
+        <input asp-for="Input.Password" class="form-control" type="password" id="Input_Password" />
         <span asp-validation-for="Input.Password" class="text-danger"></span>
+        <div id="password-strength-meter" class="mt-2"></div>
     </div>
+
     <div class="form-group">
         <label asp-for="Input.ConfirmPassword"></label>
-        <input asp-for="Input.ConfirmPassword" class="form-control" />
+        <input asp-for="Input.ConfirmPassword" class="form-control" type="password" />
         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
     </div>
+
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
+
+@section Scripts {
+    <script>
+        // Password strength meter
+        $('#Input_Password').on('input', function () {
+            var password = $(this).val();
+            var meter = $('#password-strength-meter');
+            var strength = checkPasswordStrength(password);
+            meter.removeClass().addClass('strength-' + strength).text('Strength: ' + strength);
+        });
+
+        function checkPasswordStrength(password) {
+            var strength = 0;
+            // Password length
+            if (password.length >= 8) strength += 1;
+            // Contains lowercase letters
+            if (/[a-z]/.test(password)) strength += 1;
+            // Contains uppercase letters
+            if (/[A-Z]/.test(password)) strength += 1;
+            // Contains numbers
+            if (/\d/.test(password)) strength += 1;
+            // Contains special characters
+            if (/[\W_]/.test(password)) strength += 1;
+
+            // Return strength level
+            switch (strength) {
+                case 0:
+                case 1:
+                    return "very weak";
+                case 2:
+                    return "weak";
+                case 3:
+                    return "medium";
+                case 4:
+                    return "strong";
+                case 5:
+                    return "very strong";
+                default:
+                    return "very weak";
+            }
+        }
+    </script>
+
+    <style>
+        .strength-very-weak {
+            color: red;
+        }
+
+        .strength-weak {
+            color: orange;
+        }
+
+        .strength-medium {
+            color: yellow;
+        }
+
+        .strength-strong {
+            color: lightgreen;
+        }
+
+        .strength-very-strong {
+            color: green;
+        }
+    </style>
+}
