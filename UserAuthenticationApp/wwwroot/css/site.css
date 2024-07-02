@@ -39,7 +39,7 @@ footer {
 
 /* Ensure footer does not overlap content */
 .container {
-    padding-bottom: 100px; /* Adjust based on footer height */
+    padding-bottom: 120px; /* Adjust based on footer height and additional space */
 }
 
 /* Adjust spacing after form elements */
