@@ -1,22 +1,48 @@
-html {
-  font-size: 14px;
+/* Reset default margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+html, body {
+    background-color: #222426;
+    color: #fff;
+    font-size: 16px;
+    position: relative;
+    min-height: 100%;
+    margin-bottom: 60px; /* Adjust bottom margin as needed */
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 18px; /* Adjust font size for larger screens */
+    }
 }
 
+/* Example button and form control focus styling */
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Footer styles */
+footer {
+    background-color: #333; /* Footer background color */
+    color: #fff; /* Footer text color */
+    padding: 20px 0; /* Vertical padding inside the footer */
+    position: absolute; /* Position footer at the bottom of the viewport */
+    width: 100%; /* Full width */
+    text-align: center; /* Center-align text */
+    bottom: 0; /* Stick to the bottom */
 }
 
-body {
-  margin-bottom: 60px;
+/* Ensure footer does not overlap content */
+.container {
+    padding-bottom: 100px; /* Adjust based on footer height */
+}
+
+/* Adjust spacing after form elements */
+.form-group {
+    margin-bottom: 20px; /* Adjust as needed for the desired spacing */
 }

@@ -1,32 +1,68 @@
 ﻿@page
 @model UserAuthenticationApp.Pages.Account.Login.LoginModel
 @{
+    // Set the title of the page
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Page title from ViewData -->
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Custom site styles -->
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <header>
+        <!-- Navbar with Acticheck logo -->
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/acticheck-logo.png" alt="Acticheck Logo" height="30">
+                </a>
+            </div>
+        </nav>
+    </header>
 
-<form method="post" class="needs-validation" novalidate>
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" name="username" required>
-        <div class="invalid-feedback">
-            Please enter your username.
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-        <div class="invalid-feedback">
-            Please enter your password.
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+    <div class="container">
+        <!-- Login form -->
+        <h1>Login</h1>
 
-@section Scripts {
+        <form method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <!-- Username input -->
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <div class="invalid-feedback">
+                    Please enter your username.
+                </div>
+            </div>
+            <div class="mb-3">
+                <!-- Password input -->
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="invalid-feedback">
+                    Please enter your password.
+                </div>
+            </div>
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+
+    <footer>
+        <!-- Footer content -->
+    </footer>
+
+    <!-- JavaScript libraries -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // JavaScript to enable Bootstrap client-side validation
+        // Form validation script
         (function () {
             'use strict';
 
@@ -45,4 +81,5 @@
                 });
         })();
     </script>
-}
+</body>
+</html>

@@ -1,43 +1,81 @@
 ﻿@page
 @model UserAuthenticationApp.Pages.Account.Register.RegisterModel
 @{
+    // Set the title of the page
     ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Page title from ViewData -->
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Custom site styles -->
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <header>
+        <!-- Navbar with Acticheck logo -->
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/acticheck-logo.png" alt="Acticheck Logo" height="30">
+                </a>
+            </div>
+        </nav>
+    </header>
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Input.Username"></label>
-        <input asp-for="Input.Username" class="form-control" />
-        <span asp-validation-for="Input.Username" class="text-danger"></span>
+    <div class="container">
+        <!-- Register form -->
+        <h1>Register</h1>
+
+        <form method="post">
+            <div class="form-group">
+                <!-- Username input -->
+                <label asp-for="Input.Username"></label>
+                <input asp-for="Input.Username" class="form-control" />
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <!-- Email input -->
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <!-- Password input with strength meter -->
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" type="password" id="Input_Password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div id="password-strength-meter" class="mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <!-- Confirm Password input -->
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" type="password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Input.Email"></label>
-        <input asp-for="Input.Email" class="form-control" />
-        <span asp-validation-for="Input.Email" class="text-danger"></span>
-    </div>
+    <footer>
+        <!-- Footer content -->
+    </footer>
 
-    <div class="form-group">
-        <label asp-for="Input.Password"></label>
-        <input asp-for="Input.Password" class="form-control" type="password" id="Input_Password" />
-        <span asp-validation-for="Input.Password" class="text-danger"></span>
-        <div id="password-strength-meter" class="mt-2"></div>
-    </div>
+    <!-- JavaScript libraries -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="form-group">
-        <label asp-for="Input.ConfirmPassword"></label>
-        <input asp-for="Input.ConfirmPassword" class="form-control" type="password" />
-        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
-
-@section Scripts {
     <script>
-        // Password strength meter
+        // Password strength meter script
         $('#Input_Password').on('input', function () {
             var password = $(this).val();
             var meter = $('#password-strength-meter');
@@ -45,17 +83,14 @@
             meter.removeClass().addClass('strength-' + strength).text('Strength: ' + strength);
         });
 
+        // Function to check password strength
         function checkPasswordStrength(password) {
             var strength = 0;
-            // Password length
+            // Password criteria checks
             if (password.length >= 8) strength += 1;
-            // Contains lowercase letters
             if (/[a-z]/.test(password)) strength += 1;
-            // Contains uppercase letters
             if (/[A-Z]/.test(password)) strength += 1;
-            // Contains numbers
             if (/\d/.test(password)) strength += 1;
-            // Contains special characters
             if (/[\W_]/.test(password)) strength += 1;
 
             // Return strength level
@@ -77,6 +112,7 @@
         }
     </script>
 
+    <!-- Custom styles -->
     <style>
         .strength-very-weak {
             color: red;
@@ -98,4 +134,5 @@
             color: green;
         }
     </style>
-}
+</body>
+</html>
