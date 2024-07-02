@@ -31,7 +31,7 @@ footer {
     background-color: #333; /* Footer background color */
     color: #fff; /* Footer text color */
     padding: 20px 0; /* Vertical padding inside the footer */
-    position: absolute; /* Position footer at the bottom of the viewport */
+    position: fixed; /* Position footer at the bottom of the viewport */
     width: 100%; /* Full width */
     text-align: center; /* Center-align text */
     bottom: 0; /* Stick to the bottom */

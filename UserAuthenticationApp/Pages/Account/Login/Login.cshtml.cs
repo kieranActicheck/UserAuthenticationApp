@@ -62,8 +62,8 @@ namespace UserAuthenticationApp.Pages.Account.Login
             }
 
             // If we reach here, something went wrong with ModelState validation or sign-in attempt.
-            // Ensure ModelState errors are displayed in the view.
             return Page();
         }
+
     }
 }

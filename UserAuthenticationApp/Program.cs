@@ -25,9 +25,10 @@ namespace UserAuthenticationApp
             // Add Identity services
             builder.Services.AddIdentity<KieranProjectUser, IdentityRole>(options =>
             {
-                // Configure identity options
+                // Password settings
                 options.Password.RequiredLength = 8;
                 options.Password.RequireUppercase = true;
+                options.SignIn.RequireConfirmedAccount = true; // Optional: Require account confirmation
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -35,10 +36,13 @@ namespace UserAuthenticationApp
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days
                 app.UseHsts();
             }
 

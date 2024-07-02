@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using UserAuthenticationApp.Data; // Ensure to import your user type
+using UserAuthenticationApp.Data; 
 
 namespace UserAuthenticationApp.Pages.Account.Register
 {
