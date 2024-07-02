@@ -11,23 +11,20 @@ namespace UserAuthenticationApp.Pages.Account.Login
     /// </summary>
     public class LoginModel : PageModel
     {
-
         private readonly SignInManager<KieranProjectUser> _signInManager;
-        private readonly UserManager<KieranProjectUser> _userManager;
 
         /// <summary>
         /// Gets or sets the input model for user login credentials.
         /// </summary>
         [BindProperty]
-        public InputModel Input{ get; set; }
+        public InputModel Input { get; set; }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="LoginModel"/> class.
         /// </summary>
-        public LoginModel(SignInManager<KieranProjectUser> signInManager, UserManager<KieranProjectUser> userManager)
+        public LoginModel(SignInManager<KieranProjectUser> signInManager)
         {
             _signInManager = signInManager;
-            _userManager = userManager;
         }
 
         /// <summary>
@@ -40,7 +37,7 @@ namespace UserAuthenticationApp.Pages.Account.Login
         /// <summary>
         /// Handles POST requests when the login form is submitted.
         /// </summary>
-        /// <param name="returnUrl"Optional return URL after successful login.></param>
+        /// <param name="returnUrl">Optional return URL after successful login.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -65,8 +62,8 @@ namespace UserAuthenticationApp.Pages.Account.Login
             }
 
             // If we reach here, something went wrong with ModelState validation or sign-in attempt.
+            // Ensure ModelState errors are displayed in the view.
             return Page();
         }
-
     }
 }

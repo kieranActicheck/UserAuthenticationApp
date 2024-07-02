@@ -32,20 +32,25 @@
         <h1>Login</h1>
 
         <form method="post" class="needs-validation" novalidate>
+            <!-- Display model-level errors -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="mb-3">
                 <!-- Username input -->
                 <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input asp-for="Input.Username" class="form-control" id="username" name="username" required>
+                <!-- Display field-level errors -->
                 <div class="invalid-feedback">
-                    Please enter your username.
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
                 </div>
             </div>
             <div class="mb-3">
                 <!-- Password input -->
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input asp-for="Input.Password" type="password" class="form-control" id="password" name="password" required>
+                <!-- Display field-level errors -->
                 <div class="invalid-feedback">
-                    Please enter your password.
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
             </div>
             <!-- Submit button -->
