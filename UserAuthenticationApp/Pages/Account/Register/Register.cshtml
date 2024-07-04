@@ -1,7 +1,6 @@
 ﻿@page
 @model UserAuthenticationApp.Pages.Account.Register.RegisterModel
 @{
-    // Set the title of the page
     ViewData["Title"] = "Register";
 }
 
@@ -59,6 +58,12 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" type="password" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <!-- Two-Factor Authentication option -->
+                <input asp-for="Input.EnableTfa" class="form-check-input" type="checkbox" />
+                <label class="form-check-label" asp-for="Input.EnableTfa">Enable Two-Factor Authentication</label>
             </div>
 
             <!-- Submit button -->
