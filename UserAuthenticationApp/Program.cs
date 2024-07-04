@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using UserAuthenticationApp.Data;
 
 namespace UserAuthenticationApp
@@ -25,12 +26,25 @@ namespace UserAuthenticationApp
             // Add Identity services
             builder.Services.AddIdentity<KieranProjectUser, IdentityRole>(options =>
             {
-                // Configure identity options
+                // Configure password requirements
                 options.Password.RequiredLength = 8;
                 options.Password.RequireUppercase = true;
+
+                // Configure lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // Configure TFA (Two-Factor Authentication)
+                options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                options.SignIn.RequireConfirmedAccount = true; // Ensure users have confirmed their account to enable TFA
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            // Configure logging
+            builder.Logging.ClearProviders(); // Clear existing logging providers
+            builder.Logging.AddConsole(); // Add console logger
 
             var app = builder.Build();
 
@@ -38,7 +52,6 @@ namespace UserAuthenticationApp
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days
                 app.UseHsts();
             }
 
