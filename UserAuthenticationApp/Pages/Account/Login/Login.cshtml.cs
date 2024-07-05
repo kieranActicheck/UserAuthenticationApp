@@ -12,6 +12,7 @@ namespace UserAuthenticationApp.Pages.Account.Login
     public class LoginModel : PageModel
     {
         private readonly SignInManager<KieranProjectUser> _signInManager;
+        private readonly ILogger<LoginModel> _logger;
 
         /// <summary>
         /// Gets or sets the input model for user login credentials.
@@ -22,9 +23,10 @@ namespace UserAuthenticationApp.Pages.Account.Login
         /// <summary>
         /// Initialises a new instance of the <see cref="LoginModel"/> class.
         /// </summary>
-        public LoginModel(SignInManager<KieranProjectUser> signInManager)
+        public LoginModel(SignInManager<KieranProjectUser> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         /// <summary>
@@ -49,10 +51,20 @@ namespace UserAuthenticationApp.Pages.Account.Login
                 // Attempt to sign in the user using the provided username and password.
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, false, lockoutOnFailure: true);
 
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                }
                 // If sign-in is successful, redirect to the returnUrl.
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("./Lockout");
                 }
                 else
                 {

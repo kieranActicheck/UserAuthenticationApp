@@ -17,5 +17,15 @@ namespace UserAuthenticationApp.Data
         /// Gets or sets the date and time of the user's last login.
         /// </summary>
         public DateTime LastLoginDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the forename of the user.
+        /// </summary>
+        public string Forename { get; set; }
+
+        /// <summary>
+        /// Gets or sets the surname of the user.
+        /// </summary>
+        public string Surname { get; set; }
     }
 }
