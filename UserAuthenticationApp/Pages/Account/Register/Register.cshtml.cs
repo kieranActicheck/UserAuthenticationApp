@@ -14,11 +14,13 @@ namespace UserAuthenticationApp.Pages.Account.Register
     {
         private readonly UserManager<KieranProjectUser> _userManager;
         private readonly SignInManager<KieranProjectUser> _signInManager;
+        private readonly ILogger<RegisterModel> _logger;
 
-        public RegisterModel(UserManager<KieranProjectUser> userManager, SignInManager<KieranProjectUser> signInManager)
+        public RegisterModel(UserManager<KieranProjectUser> userManager, SignInManager<KieranProjectUser> signInManager, ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         /// <summary>
@@ -26,48 +28,6 @@ namespace UserAuthenticationApp.Pages.Account.Register
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
-
-        /// <summary>
-        /// Input model for capturing user registration details.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            /// Gets or sets the username.
-            /// </summary>
-            [Required]
-            public string Username { get; set; }
-
-            /// <summary>
-            /// Gets or sets the email address.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            /// <summary>
-            /// Gets or sets the password.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            /// <summary>
-            /// Gets or sets the confirmation of the password.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm Password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-
-            /// <summary>
-            /// Gets or sets a value indicating whether Two-Factor Authentication (TFA) is enabled for the user.
-            /// </summary>
-            public bool EnableTfa { get; set; }
-        }
 
         /// <summary>
         /// Handles the GET request to the registration page.
@@ -87,17 +47,20 @@ namespace UserAuthenticationApp.Pages.Account.Register
 
             if (ModelState.IsValid)
             {
-                var user = new KieranProjectUser 
-                { 
-                    UserName = Input.Username, 
+                var user = new KieranProjectUser
+                {
+                    UserName = Input.UsernameOrEmail,
                     Email = Input.Email,
-                    TwoFactorEnabled = Input.EnableTfa
+                    TwoFactorEnabled = Input.EnableTfa,
+                    Forename = Input.Forename,
+                    Surname = Input.Surname
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    // Optionally, sign in the user
+                    _logger.LogInformation("User created a new account with password.");
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
@@ -108,7 +71,6 @@ namespace UserAuthenticationApp.Pages.Account.Register
                 }
             }
 
-            // If ModelState is not valid, return the page to show validation errors
             return Page();
         }
     }

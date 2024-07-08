@@ -1,5 +1,6 @@
 ﻿@page
 @model UserAuthenticationApp.Pages.Account.Register.RegisterModel
+
 @{
     ViewData["Title"] = "Register";
 }
@@ -32,10 +33,24 @@
 
         <form method="post">
             <div class="form-group">
-                <!-- Username input -->
-                <label asp-for="Input.Username"></label>
-                <input asp-for="Input.Username" class="form-control" />
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
+                <!-- Forename input -->
+                <label asp-for="Input.Forename"></label>
+                <input asp-for="Input.Forename" class="form-control" />
+                <span asp-validation-for="Input.Forename" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <!-- Surname input -->
+                <label asp-for="Input.Surname"></label>
+                <input asp-for="Input.Surname" class="form-control" />
+                <span asp-validation-for="Input.Surname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <!-- Username or Email input -->
+                <label asp-for="Input.UsernameOrEmail"></label>
+                <input asp-for="Input.UsernameOrEmail" class="form-control" />
+                <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
             </div>
 
             <div class="form-group">

@@ -8,10 +8,10 @@ namespace UserAuthenticationApp.Pages.Account.Register
     public class InputModel
     {
         /// <summary>
-        /// Gets or sets the username entered by the user.
+        /// Gets or sets the username or email entered by the user.
         /// </summary>
         [Required]
-        public string Username { get; set; }
+        public string UsernameOrEmail { get; set; }
 
         /// <summary>
         /// Gets or sets the email entered by the user.
@@ -45,5 +45,17 @@ namespace UserAuthenticationApp.Pages.Account.Register
         /// </summary>
         [Display(Name = "Enable Two-Factor Authentication")]
         public bool EnableTfa { get; set; }
+
+        /// <summary>
+        /// Gets or sets the forename entered by the user.
+        /// </summary>
+        [Required]
+        public string Forename { get; set; }
+
+        /// <summary>
+        /// Gets or sets the surname entered by the user.
+        /// </summary>
+        [Required]
+        public string Surname { get; set; }
     }
 }
