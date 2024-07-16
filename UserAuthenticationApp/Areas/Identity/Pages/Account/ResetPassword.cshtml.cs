@@ -17,9 +17,9 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account
 {
     public class ResetPasswordModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
 
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager)
+        public ResetPasswordModel(UserManager<KieranProjectUser> userManager)
         {
             _userManager = userManager;
         }

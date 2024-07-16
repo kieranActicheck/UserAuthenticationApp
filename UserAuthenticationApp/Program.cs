@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UserAuthenticationApp.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using UserAuthenticationApp.Services;
 
 namespace UserAuthenticationApp
 {
@@ -41,6 +43,9 @@ namespace UserAuthenticationApp
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            // Register the IEmailSender implementation
+            builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
             // Configure logging
             builder.Logging.ClearProviders(); // Clear existing logging providers
