@@ -14,12 +14,12 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
+        private readonly SignInManager<KieranProjectUser> _signInManager;
 
         public SetPasswordModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            UserManager<KieranProjectUser> userManager,
+            SignInManager<KieranProjectUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

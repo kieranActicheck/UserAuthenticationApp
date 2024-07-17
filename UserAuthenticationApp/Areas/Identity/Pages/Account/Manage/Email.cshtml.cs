@@ -18,13 +18,13 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
+        private readonly SignInManager<KieranProjectUser> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<KieranProjectUser> userManager,
+            SignInManager<KieranProjectUser> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -74,7 +74,7 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private async Task LoadAsync(KieranProjectUser user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;
