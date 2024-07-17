@@ -36,12 +36,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="mb-3">
-                <!-- Username input -->
-                <label for="username" class="form-label">Username</label>
-                <input asp-for="Input.Username" class="form-control" id="username" name="username" required>
+                <!-- Username or Email input -->
+                <label for="usernameOrEmail" class="form-label">Username or Email</label>
+                <input asp-for="Input.UsernameOrEmail" class="form-control" id="usernameOrEmail" name="usernameOrEmail" required>
                 <!-- Display field-level errors -->
                 <div class="invalid-feedback">
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
                 </div>
             </div>
             <div class="mb-3">
