@@ -1,4 +1,4 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
+﻿@inject SignInManager<KieranProjectUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

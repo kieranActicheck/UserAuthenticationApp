@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UserAuthenticationApp.Data;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using UserAuthenticationApp.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace UserAuthenticationApp
 {
@@ -25,7 +22,7 @@ namespace UserAuthenticationApp
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Add Identity services
+            // Add Identity services using KieranProjectUser
             builder.Services.AddIdentity<KieranProjectUser, IdentityRole>(options =>
             {
                 // Configure password requirements
@@ -45,7 +42,18 @@ namespace UserAuthenticationApp
             .AddDefaultTokenProviders();
 
             // Register the IEmailSender implementation
-            builder.Services.AddSingleton<IEmailSender, EmailSender>();
+            var sendGridApiKey = builder.Configuration["SendGrid:ApiKey"];
+            builder.Services.AddSingleton<IEmailSender, EmailSender>(serviceProvider => {
+                var logger = serviceProvider.GetRequiredService<ILogger<EmailSender>>();
+                return new EmailSender(sendGridApiKey, logger);
+            });
+
+            builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+            });
+
 
             // Configure logging
             builder.Logging.ClearProviders(); // Clear existing logging providers

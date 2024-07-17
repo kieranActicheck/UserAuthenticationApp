@@ -9,9 +9,9 @@ namespace UserAuthenticationApp.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
 
-        public HomeController(UserManager<ApplicationUser> userManager)
+        public HomeController(UserManager<KieranProjectUser> userManager)
         {
             _userManager = userManager;
         }
@@ -19,11 +19,11 @@ namespace UserAuthenticationApp.Controllers
         [HttpGet]
         public async Task<string> GetCurrentUserId()
         {
-            ApplicationUser usr = await GetCurrentUserAsync();
+            KieranProjectUser usr = await GetCurrentUserAsync();
             return usr?.Id;
         }
 
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        private Task<KieranProjectUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         /// <summary>
         /// Displays the home page.

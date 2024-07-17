@@ -17,13 +17,13 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<KieranProjectUser> _signInManager;
+        private readonly UserManager<KieranProjectUser> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
 
         public LoginWith2faModel(
-            SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager,
+            SignInManager<KieranProjectUser> signInManager,
+            UserManager<KieranProjectUser> userManager,
             ILogger<LoginWith2faModel> logger)
         {
             _signInManager = signInManager;
