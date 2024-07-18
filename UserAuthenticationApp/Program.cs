@@ -48,11 +48,16 @@ namespace UserAuthenticationApp
                 return new EmailSender(sendGridApiKey, logger);
             });
 
+            Console.WriteLine($"FacebookAppId: {Environment.GetEnvironmentVariable("FacebookAppId")}");
+            Console.WriteLine($"FacebookAppSecret: {Environment.GetEnvironmentVariable("FacebookAppSecret")}");
+
             builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+                facebookOptions.AppId = Environment.GetEnvironmentVariable("FacebookAppId");
+                facebookOptions.AppSecret = Environment.GetEnvironmentVariable("FacebookAppSecret");
             });
+
+            
 
 
             // Configure logging
