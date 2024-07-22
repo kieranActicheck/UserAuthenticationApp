@@ -46,3 +46,17 @@ footer {
 .form-group {
     margin-bottom: 20px; /* Adjust as needed for the desired spacing */
 }
+
+/* Enhanced placeholder visibility */
+.form-control::placeholder {
+    color: #ccc !important; /* Lighter grey for better visibility, forced override */
+    opacity: 1 !important; /* Ensure full opacity */
+}
+
+.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #ccc !important;
+}
+
+.form-control::-ms-input-placeholder { /* Microsoft Edge */
+    color: #ccc !important;
+}
