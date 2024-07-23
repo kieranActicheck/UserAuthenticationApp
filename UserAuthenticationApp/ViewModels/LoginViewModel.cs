@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging; 
+using UserAuthenticationApp.Data;
 
 namespace UserAuthenticationApp.ViewModels
 {
@@ -9,17 +12,20 @@ namespace UserAuthenticationApp.ViewModels
     /// </summary>
     public class LoginViewModel
     {
+        private readonly SignInManager<KieranProjectUser> _signInManager;
+        private readonly ILogger<LoginViewModel> _logger;
+
         /// <summary>
         /// Gets or sets the username or email for login.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Please enter your username or email.")]
         [Display(Name = "Username or Email")]
         public string UsernameOrEmail { get; set; }
 
         /// <summary>
         /// Gets or sets the password for login.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
@@ -38,5 +44,16 @@ namespace UserAuthenticationApp.ViewModels
         /// Gets or sets the list of external login providers available for authentication.
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+        /// <summary>
+        /// Constructor that ensures that ExternalLogins is never null.
+        /// </summary>
+        public LoginViewModel(SignInManager<KieranProjectUser> signInManager, ILogger<LoginViewModel> logger)
+        {
+            _signInManager = signInManager;
+            _logger = logger;
+            ExternalLogins = new List<AuthenticationScheme>();
+        }
+
     }
 }

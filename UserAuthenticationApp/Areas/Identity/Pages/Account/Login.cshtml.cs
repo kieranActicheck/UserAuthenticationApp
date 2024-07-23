@@ -94,19 +94,37 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            try
+            {
+                // Clear the existing external cookie to ensure a clean login process
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                // Ensure ExternalLogins is initialised to prevent null reference exceptions
+                if (ExternalLogins == null)
+                {
+                    _logger.LogWarning("ExternalLogins is null. This might indicate an issue with retrieving external authentication schemes.");
+                    ExternalLogins = new List<AuthenticationScheme>();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while setting up external login options.");
+                ExternalLogins = new List<AuthenticationScheme>();
+                ModelState.AddModelError(string.Empty, "An error occurred while setting up external login options. Please try again later.");
+            }
 
             ReturnUrl = returnUrl;
         }
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            // Ensure ExternalLogins is never null
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList() ?? new List<AuthenticationScheme>();
 
             if (ModelState.IsValid)
             {
