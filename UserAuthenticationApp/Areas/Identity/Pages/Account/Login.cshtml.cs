@@ -94,6 +94,9 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
+            // Ensure Input is initialised to prevent issues on the Razor page
+            Input = new InputModel();
+
             try
             {
                 // Clear the existing external cookie to ensure a clean login process
@@ -101,12 +104,8 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account
 
                 ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-                // Ensure ExternalLogins is initialised to prevent null reference exceptions
-                if (ExternalLogins == null)
-                {
-                    _logger.LogWarning("ExternalLogins is null. This might indicate an issue with retrieving external authentication schemes.");
-                    ExternalLogins = new List<AuthenticationScheme>();
-                }
+                // The null check here is redundant since ToList() would either return a list or throw an exception
+                // Removed the null check for ExternalLogins
             }
             catch (Exception ex)
             {
