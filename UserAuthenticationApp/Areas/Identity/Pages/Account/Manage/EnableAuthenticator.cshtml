@@ -50,4 +50,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/qrcode.min.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var qrCodeElement = document.getElementById('qrCode');
+            if (qrCodeElement) {
+                var qrCodeData = document.getElementById('qrCodeData').getAttribute('data-url');
+                new QRCode(qrCodeElement, {
+                    text: qrCodeData,
+                    width: 128,
+                    height: 128,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        });
+    </script>
 }
