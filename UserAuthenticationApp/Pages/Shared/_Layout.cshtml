@@ -15,19 +15,29 @@
     <style>
         html, body {
             height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #222426; /* Ensure background color is applied */
+            color: #fff;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
         }
 
-        main {
-            flex: 1 0 auto;
+        .content {
+            flex: 1;
         }
 
         footer {
-            flex-shrink: 0;
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+            position: relative; /* Ensure it's not absolute or fixed */
+            width: 100%;
         }
     </style>
 </head>
@@ -66,7 +76,7 @@
     </header>
 
     <!-- Main Content Section -->
-    <div class="container">
+    <div class="container content">
         @if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
         {
             Layout = parentLayout.ToString();
@@ -80,7 +90,7 @@
     </div>
 
     <!-- Footer Section -->
-    <footer class="border-top footer text-muted mt-auto">
+    <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Now.Year - UserAuthenticationApp
         </div>

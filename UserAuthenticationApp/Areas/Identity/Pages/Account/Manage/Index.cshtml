@@ -34,7 +34,19 @@
     <div class="col-md-8">
         <h4>Update Profile</h4>
         <hr />
-        <form method="post">
+        <form method="post" asp-page-handler="UpdateProfile">
+            <!-- Added Username Field -->
+            <div class="form-group">
+                <label asp-for="Input.Username" class="control-label"></label>
+                <input asp-for="Input.Username" class="form-control" />
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+            <!-- Added Email Field -->
+            <div class="form-group">
+                <label asp-for="Input.Email" class="control-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Input.PhoneNumber" class="control-label"></label>
                 <input asp-for="Input.PhoneNumber" class="form-control" />

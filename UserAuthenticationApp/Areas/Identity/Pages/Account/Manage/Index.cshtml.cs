@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using UserAuthenticationApp.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 {
@@ -28,16 +30,13 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             _emailSender = emailSender;
             Username = string.Empty;
             Email = string.Empty;
-            StatusMessage = string.Empty;
             Input = new InputModel();
             ChangePassword = new ChangePasswordModel();
+            StatusMessage = string.Empty;
         }
 
         public string Username { get; set; }
         public string Email { get; set; }
-
-        [TempData]
-        public string StatusMessage { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -45,8 +44,20 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public ChangePasswordModel ChangePassword { get; set; }
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public class InputModel
         {
+            [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; } = string.Empty;
+
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; } = string.Empty;
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; } = string.Empty;
@@ -76,68 +87,95 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogError("Unable to load user with ID '{UserId}'.", _userManager.GetUserId(User));
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            Username = user.UserName ?? string.Empty;
+            Email = user.Email ?? string.Empty;
 
-            Username = userName ?? string.Empty;
-            Email = email ?? string.Empty;
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber ?? string.Empty
+                Username = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty
             };
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostUpdateProfileAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid.");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        _logger.LogWarning("Validation error in {Field}: {Error}", state.Key, error.ErrorMessage);
+                    }
+                }
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
+                _logger.LogError("Unable to load user with ID '{UserId}'.", _userManager.GetUserId(User));
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            _logger.LogInformation("Updating user profile for user with ID '{UserId}'.", user.Id);
+
+            user.UserName = Input.Username;
+            user.Email = Input.Email;
+            user.PhoneNumber = Input.PhoneNumber;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                _logger.LogError("Failed to update user profile for user with ID '{UserId}'. Errors: {Errors}", user.Id, updateResult.Errors);
+                foreach (var error in updateResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
+            }
+
+            _logger.LogInformation("Successfully updated user profile for user with ID '{UserId}'.", user.Id);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+
+            // Ensure Username and Email are set correctly after update
+            Username = user.UserName ?? string.Empty;
+            Email = user.Email ?? string.Empty;
+
+            // Redirect to the same page to refresh the data
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostChangePasswordAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Model state is invalid.");
+                return Page();
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogError("Unable to load user with ID '{UserId}'.", _userManager.GetUserId(User));
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Page();
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, ChangePassword.OldPassword, ChangePassword.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
+                _logger.LogError("Failed to change password for user with ID '{UserId}'. Errors: {Errors}", user.Id, changePasswordResult.Errors);
                 foreach (var error in changePasswordResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -146,26 +184,84 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
+            _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
+
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostEnableTfaAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Model state is invalid.");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        _logger.LogWarning("Validation error in {Field}: {Error}", state.Key, error.ErrorMessage);
+                    }
+                }
+                return Page();
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogError("Unable to load user with ID '{UserId}'.", _userManager.GetUserId(User));
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultAuthenticatorProvider);
-            if (user.Email != null)
+            _logger.LogInformation("Generating 2FA token for user with ID '{UserId}'.", user.Id);
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            if (string.IsNullOrWhiteSpace(token))
             {
-                await _emailSender.SendEmailAsync(user.Email, "Your TFA Code", $"Your TFA code is {token}");
+                _logger.LogError("Failed to generate 2FA token for user with ID '{UserId}'.", user.Id);
+                return RedirectToPage("./Error");
             }
 
-            StatusMessage = "Two-Factor Authentication has been enabled.";
+            var email = await _userManager.GetEmailAsync(user);
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                _logger.LogError("User with ID '{UserId}' does not have a valid email address.", user.Id);
+                ModelState.AddModelError(string.Empty, "There was an error retrieving the email address. Please try again.");
+                return Page();
+            }
+
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmTwoFactor",
+                pageHandler: null,
+                values: new { userId = user.Id, token = token },
+                protocol: Request.Scheme);
+
+            if (callbackUrl == null)
+            {
+                _logger.LogError("Failed to generate callback URL for user with ID '{UserId}'.", user.Id);
+                ModelState.AddModelError(string.Empty, "There was an error generating the callback URL. Please try again.");
+                return Page();
+            }
+
+            _logger.LogInformation("Sending 2FA token to user with ID '{UserId}' via email.", user.Id);
+
+            try
+            {
+                await _emailSender.SendEmailAsync(
+                    email,
+                    "Enable Two-Factor Authentication",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                _logger.LogInformation("2FA token email sent successfully to user with ID '{UserId}'.", user.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending 2FA token email to user with ID '{UserId}'.", user.Id);
+                ModelState.AddModelError(string.Empty, "There was an error sending the email. Please try again.");
+                return Page();
+            }
+
             return RedirectToPage();
         }
+
+
     }
 }

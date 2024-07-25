@@ -10,15 +10,27 @@ html, body {
     background-color: #222426;
     color: #fff;
     font-size: 16px;
-    position: relative;
-    min-height: 100%;
-    margin-bottom: 60px; /* Adjust bottom margin as needed */
+    height: 100%; /* Ensure html and body cover the full height */
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    flex: 1; /* Ensure body takes up all available space */
 }
 
 @media (min-width: 768px) {
     html {
         font-size: 18px; /* Adjust font size for larger screens */
     }
+}
+
+/* Main content should take up all available space */
+.content {
+    flex: 1;
+    background-color: #222426; /* Ensure content area has the same background color */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Example button and form control focus styling */
@@ -31,15 +43,10 @@ footer {
     background-color: #333; /* Footer background color */
     color: #fff; /* Footer text color */
     padding: 20px 0; /* Vertical padding inside the footer */
-    position: absolute; /* Position footer at the bottom of the viewport */
     width: 100%; /* Full width */
     text-align: center; /* Center-align text */
-    bottom: 0; /* Stick to the bottom */
-}
-
-/* Ensure footer does not overlap content */
-.container {
-    padding-bottom: 120px; /* Adjust based on footer height and additional space */
+    margin-top: auto; /* Push footer to the bottom */
+    position: relative; /* Ensure it's not absolute or fixed */
 }
 
 /* Adjust spacing after form elements */
@@ -57,6 +64,16 @@ footer {
     color: #ccc !important;
 }
 
-.form-control::-ms-input-placeholder { /* Microsoft Edge */
-    color: #ccc !important;
+/* Header styles */
+header, .navbar {
+    background-color: #fff; /* White background for header */
+    color: #000; /* Black text for contrast */
 }
+
+.nav-link {
+    color: #000; /* Black text for navigation links */
+}
+
+    .nav-link:hover {
+        color: #258cfb; /* Blue text on hover */
+    }

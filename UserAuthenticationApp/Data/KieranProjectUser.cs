@@ -28,9 +28,5 @@ namespace UserAuthenticationApp.Data
         /// </summary>
         public string Surname { get; set; }
 
-        /// <summary>
-        /// Gets or setst the phone number of the user.
-        /// </summary>
-        public string PhoneNumber { get; set; }
     }
 }

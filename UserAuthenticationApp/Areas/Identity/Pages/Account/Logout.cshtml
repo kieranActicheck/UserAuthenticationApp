@@ -1,21 +1,63 @@
 ﻿@page
 @model LogoutModel
+
 @{
     ViewData["Title"] = "Log out";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~/")" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application. <a href="@Url.Content("~/")">Click here to return to the home page.</a></p>
-        }
-    }
-</header>
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~/")" method="post">
+                    <h2>Are you sure you want to log out?</h2>
+                    <hr />
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log out</button>
+                </form>
+            }
+            else
+            {
+                <div>
+                    <p>You have successfully logged out of the application.</p>
+                    <p><a href="@Url.Content("~/")">Click here to return to the home page.</a></p>
+                </div>
+            }
+        </section>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to log in.</h3>
+            <hr />
+            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <div>
+                    <p>
+                        There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                            article
+                            about setting up this ASP.NET application to support logging in via external services
+                        </a>.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                            }
+                        </p>
+                    </div>
+                </form>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
