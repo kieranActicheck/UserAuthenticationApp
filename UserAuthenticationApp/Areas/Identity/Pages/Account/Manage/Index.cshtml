@@ -25,6 +25,9 @@
     <li class="nav-item">
         <a class="nav-link" id="personalData-tab" data-toggle="tab" href="#personalData" role="tab" aria-controls="personalData" aria-selected="false">Personal Data</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="deletePersonalData-tab" data-toggle="tab" href="#deletePersonalData" role="tab" aria-controls="deletePersonalData" aria-selected="false">Delete Personal Data</a>
+    </li>
 </ul>
 
 <!-- Tab Content -->
@@ -58,8 +61,21 @@
     <div class="tab-pane fade" id="twoFactor" role="tabpanel" aria-labelledby="twoFactor-tab">
         <!-- Two-Factor Authentication Settings -->
     </div>
-    <div class="tab-pane fade" id="personalData" role="tabpanel" aria-labelledby="personalData-tab">
-        <!-- Personal Data Settings -->
+    <div class="tab-pane fade" id="deletePersonalData" role="tabpanel" aria-labelledby="deletePersonalData-tab">
+        <!-- Delete Personal Data Settings -->
+        <div class="row">
+            <div class="col-md-6">
+                <form id="delete-personal-data-form" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+                        <label asp-for="Input.Password"></label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="w-100 btn btn-lg btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

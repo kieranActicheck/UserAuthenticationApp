@@ -14,10 +14,12 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 
         public IndexModel(
             UserManager<KieranProjectUser> userManager,
-            SignInManager<KieranProjectUser> signInManager)
+            SignInManager<KieranProjectUser> signInManager,
+            ILogger<IndexModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         public string Username { get; set; }
@@ -38,6 +40,11 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             [EmailAddress]
             [Display(Name = "Email address")]
             public string Email { get; set; }
+
+            [Required]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
         }
 
         private async Task LoadAsync(KieranProjectUser user)
@@ -101,7 +108,6 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
                     // Log each error
                     foreach (var error in setPhoneResult.Errors)
                     {
-                        // Assuming _logger is an instance of ILogger<IndexModel>
                         _logger.LogError("Error updating phone number for user {UserId}: {ErrorCode} - {Description}", user.Id, error.Code, error.Description);
                     }
 
@@ -118,6 +124,5 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
-
     }
 }
