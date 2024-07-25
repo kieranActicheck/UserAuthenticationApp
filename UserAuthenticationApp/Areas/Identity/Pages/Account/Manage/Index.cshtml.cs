@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using UserAuthenticationApp.Data;
 
 namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
@@ -11,18 +14,27 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<KieranProjectUser> _userManager;
         private readonly SignInManager<KieranProjectUser> _signInManager;
         private readonly ILogger<IndexModel> _logger;
+        private readonly IEmailSender _emailSender;
 
         public IndexModel(
             UserManager<KieranProjectUser> userManager,
             SignInManager<KieranProjectUser> signInManager,
-            ILogger<IndexModel> logger)
+            ILogger<IndexModel> logger,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _emailSender = emailSender;
+            Username = string.Empty;
+            Email = string.Empty;
+            StatusMessage = string.Empty;
+            Input = new InputModel();
+            ChangePassword = new ChangePasswordModel();
         }
 
         public string Username { get; set; }
+        public string Email { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -30,36 +42,33 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
+        [BindProperty]
+        public ChangePasswordModel ChangePassword { get; set; }
+
         public class InputModel
         {
             [Phone]
             [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email address")]
-            public string Email { get; set; }
-
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
+            public string PhoneNumber { get; set; } = string.Empty;
         }
 
-        private async Task LoadAsync(KieranProjectUser user)
+        public class ChangePasswordModel
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
+            [Required]
+            [DataType(DataType.Password)]
+            [Display(Name = "Current password")]
+            public string OldPassword { get; set; } = string.Empty;
 
-            Username = userName;
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "New password")]
+            public string NewPassword { get; set; } = string.Empty;
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber,
-                Email = email
-            };
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm new password")]
+            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; } = string.Empty;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -70,7 +79,17 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            var userName = await _userManager.GetUserNameAsync(user);
+            var email = await _userManager.GetEmailAsync(user);
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+            Username = userName ?? string.Empty;
+            Email = email ?? string.Empty;
+            Input = new InputModel
+            {
+                PhoneNumber = phoneNumber ?? string.Empty
+            };
+
             return Page();
         }
 
@@ -84,19 +103,7 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
                 return Page();
-            }
-
-            var email = await _userManager.GetEmailAsync(user);
-            if (Input.Email != email)
-            {
-                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set email.";
-                    return RedirectToPage();
-                }
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -105,23 +112,59 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    // Log each error
-                    foreach (var error in setPhoneResult.Errors)
-                    {
-                        _logger.LogError("Error updating phone number for user {UserId}: {ErrorCode} - {Description}", user.Id, error.Code, error.Description);
-                    }
-
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
-                }
-                else
-                {
-                    _logger.LogInformation("Telephone number updated successfully for user {UserId}.", user.Id);
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostChangePasswordAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, ChangePassword.OldPassword, ChangePassword.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "Your password has been changed.";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostEnableTfaAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultAuthenticatorProvider);
+            if (user.Email != null)
+            {
+                await _emailSender.SendEmailAsync(user.Email, "Your TFA Code", $"Your TFA code is {token}");
+            }
+
+            StatusMessage = "Two-Factor Authentication has been enabled.";
             return RedirectToPage();
         }
     }

@@ -56,7 +56,6 @@ namespace UserAuthenticationApp
                 facebookOptions.AppSecret = appSecret;
             });
 
-
             // Configure logging
             builder.Logging.ClearProviders(); // Clear existing logging providers
             builder.Logging.AddConsole(); // Add console logger

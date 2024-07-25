@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using UserAuthenticationApp.Data 
-@inject SignInManager<KieranProjectUser> SignInManager 
-@inject UserManager<KieranProjectUser> UserManager 
+@using UserAuthenticationApp.Data
+@inject SignInManager<KieranProjectUser> SignInManager
+@inject UserManager<KieranProjectUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +59,6 @@
                             <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
                             <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
                         }
-
                     </ul>
                 </div>
             </div>
@@ -68,9 +67,16 @@
 
     <!-- Main Content Section -->
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        @if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+        {
+            Layout = parentLayout.ToString();
+        }
+        else
+        {
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        }
     </div>
 
     <!-- Footer Section -->
