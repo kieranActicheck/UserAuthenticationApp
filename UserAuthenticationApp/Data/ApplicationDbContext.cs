@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UserAuthenticationApp.Data;
 
 namespace UserAuthenticationApp.Data
 {
@@ -10,13 +9,11 @@ namespace UserAuthenticationApp.Data
     /// by Entity Framework Core. This class typically includes 'DbSet' properties for each entity that
     /// represents a table in the database.
     /// </summary>
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<KieranProjectUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
-        public DbSet<KieranProjectUser> KieranProjectUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

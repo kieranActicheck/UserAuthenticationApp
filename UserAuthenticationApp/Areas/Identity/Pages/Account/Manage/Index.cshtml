@@ -32,55 +32,72 @@
         </dl>
     </div>
     <div class="col-md-8">
-        <h4>Update Profile</h4>
-        <hr />
-        <form method="post" asp-page-handler="UpdateProfile">
-            <!-- Added Username Field -->
-            <div class="form-group">
-                <label asp-for="Input.Username" class="control-label"></label>
-                <input asp-for="Input.Username" class="form-control" />
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
+        <ul class="nav nav-tabs" id="manageTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="update-profile-tab" data-toggle="tab" href="#update-profile" role="tab" aria-controls="update-profile" aria-selected="true">Update Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="change-password-tab" data-toggle="tab" href="/Identity/Account/Manage/ChangePassword" role="tab" aria-controls="change-password" aria-selected="false">Change Password</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="two-factor-auth-tab" data-toggle="tab" href="/Identity/Account/Manage/TwoFactorAuthentication" role="tab" aria-controls="two-factor-auth" aria-selected="false">Two-Factor Authentication</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="manageTabsContent">
+            <div class="tab-pane fade show active" id="update-profile" role="tabpanel" aria-labelledby="update-profile-tab">
+                <h4 class="mt-4">Update Profile</h4>
+                <hr />
+                <form method="post" asp-page-handler="UpdateProfile">
+                    <!-- Added Username Field -->
+                    <div class="form-group">
+                        <label asp-for="Input.Username" class="control-label"></label>
+                        <input asp-for="Input.Username" class="form-control" />
+                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    </div>
+                    <!-- Added Email Field -->
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="control-label"></label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.PhoneNumber" class="control-label"></label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
-            <!-- Added Email Field -->
-            <div class="form-group">
-                <label asp-for="Input.Email" class="control-label"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
+                <h4 class="mt-4">Change Password</h4>
+                <hr />
+                <form method="post" asp-page-handler="ChangePassword">
+                    <div class="form-group">
+                        <label asp-for="ChangePassword.OldPassword" class="control-label"></label>
+                        <input asp-for="ChangePassword.OldPassword" class="form-control" type="password" />
+                        <span asp-validation-for="ChangePassword.OldPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ChangePassword.NewPassword" class="control-label"></label>
+                        <input asp-for="ChangePassword.NewPassword" class="form-control" type="password" />
+                        <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ChangePassword.ConfirmPassword" class="control-label"></label>
+                        <input asp-for="ChangePassword.ConfirmPassword" class="form-control" type="password" />
+                        <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber" class="control-label"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            <div class="tab-pane fade" id="two-factor-auth" role="tabpanel" aria-labelledby="two-factor-auth-tab">
+                <h4 class="mt-4">Two-Factor Authentication</h4>
+                <hr />
+                <form method="post" asp-page-handler="EnableTfa">
+                    <button type="submit" class="btn btn-primary">Enable Two-Factor Authentication</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
-
-        <h4 class="mt-4">Change Password</h4>
-        <hr />
-        <form method="post" asp-page-handler="ChangePassword">
-            <div class="form-group">
-                <label asp-for="ChangePassword.OldPassword" class="control-label"></label>
-                <input asp-for="ChangePassword.OldPassword" class="form-control" type="password" />
-                <span asp-validation-for="ChangePassword.OldPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChangePassword.NewPassword" class="control-label"></label>
-                <input asp-for="ChangePassword.NewPassword" class="form-control" type="password" />
-                <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChangePassword.ConfirmPassword" class="control-label"></label>
-                <input asp-for="ChangePassword.ConfirmPassword" class="form-control" type="password" />
-                <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Change Password</button>
-        </form>
-
-        <h4 class="mt-4">Two-Factor Authentication</h4>
-        <hr />
-        <form method="post" asp-page-handler="EnableTfa">
-            <button type="submit" class="btn btn-primary">Enable Two-Factor Authentication</button>
-        </form>
+        </div>
     </div>
 </div>
 
