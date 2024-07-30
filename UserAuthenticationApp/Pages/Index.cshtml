@@ -6,7 +6,16 @@
 
 <div class="text-center">
     <img src="~/images/acticheck-logo.png" alt="Acticheck Logo" height="100">
-    <h1 class="display-4">Welcome to Acticheck Portal Demo!</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4">Welcome back, @User.Identity.Name!</h1>
+        <p>You are logged in to the Acticheck Portal Demo.</p>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to the Acticheck Portal Demo!</h1>
+        <p>Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> or <a asp-area="Identity" asp-page="/Account/Register">register</a> to enjoy our services.</p>
+    }
     <p>This application demonstrates a simple login and registration system using ASP.NET Core.</p>
     <p>Features:</p>
     <ul>

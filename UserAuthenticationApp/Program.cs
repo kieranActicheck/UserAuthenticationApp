@@ -42,7 +42,7 @@ namespace UserAuthenticationApp
             .AddDefaultTokenProviders();
 
             // Register the IEmailSender implementation
-            var sendGridApiKey = builder.Configuration["SendGrid:ApiKey"];
+            var sendGridApiKey = builder.Configuration["SendGrid:ApiKey"] ?? throw new InvalidOperationException("SendGrid API key is not configured.");
             builder.Services.AddSingleton<IEmailSender, EmailSender>(serviceProvider => {
                 var logger = serviceProvider.GetRequiredService<ILogger<EmailSender>>();
                 return new EmailSender(sendGridApiKey, logger);
@@ -50,10 +50,11 @@ namespace UserAuthenticationApp
 
             builder.Services.AddAuthentication().AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+                var appId = builder.Configuration["Authentication:Facebook:AppId"] ?? throw new InvalidOperationException("Facebook AppId is not configured.");
+                var appSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? throw new InvalidOperationException("Facebook AppSecret is not configured.");
+                facebookOptions.AppId = appId;
+                facebookOptions.AppSecret = appSecret;
             });
-
 
             // Configure logging
             builder.Logging.ClearProviders(); // Clear existing logging providers

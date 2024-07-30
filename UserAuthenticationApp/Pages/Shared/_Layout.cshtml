@@ -1,4 +1,8 @@
-﻿@* _Layout.cshtml *@
+﻿@using Microsoft.AspNetCore.Identity
+@using UserAuthenticationApp.Data
+@inject SignInManager<KieranProjectUser> SignInManager
+@inject UserManager<KieranProjectUser> UserManager
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,19 +15,29 @@
     <style>
         html, body {
             height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #222426; /* Ensure background color is applied */
+            color: #fff;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
         }
 
-        main {
-            flex: 1 0 auto;
+        .content {
+            flex: 1;
         }
 
         footer {
-            flex-shrink: 0;
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+            position: relative; /* Ensure it's not absolute or fixed */
+            width: 100%;
         }
     </style>
 </head>
@@ -42,19 +56,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Account/Login/Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Account/Register/Register">Register</a>
-                        </li>
                         <!-- IDENTITY SCAFFOLDED ITEMS -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login NEW</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register NEW</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="nav-item">
+                                <a class="nav-link text-dark" href="javascript:document.getElementById('logoutForm').submit();">Logout</a>
+                            </form>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Manage Account</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -62,14 +76,21 @@
     </header>
 
     <!-- Main Content Section -->
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="container content">
+        @if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+        {
+            Layout = parentLayout.ToString();
+        }
+        else
+        {
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        }
     </div>
 
     <!-- Footer Section -->
-    <footer class="border-top footer text-muted mt-auto">
+    <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Now.Year - UserAuthenticationApp
         </div>
@@ -80,7 +101,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @* Render additional scripts if any *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

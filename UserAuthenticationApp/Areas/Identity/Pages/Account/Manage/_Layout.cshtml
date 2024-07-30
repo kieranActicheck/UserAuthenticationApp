@@ -1,29 +1,106 @@
-﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
-    {
-        Layout = parentLayout.ToString();
-    }
-    else
-    {
-        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
-    }
-}
+﻿@using Microsoft.AspNetCore.Identity
+@using UserAuthenticationApp.Data
+@inject SignInManager<KieranProjectUser> SignInManager
+@inject UserManager<KieranProjectUser> UserManager
 
-<h1>Manage your account</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - UserAuthenticationApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/UserAuthenticationApp.styles.css" asp-append-version="true" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #222426; /* Ensure background color is applied */
+            color: #fff;
+        }
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
-        </div>
-        <div class="col-md-9">
-            @RenderBody()
-        </div>
+        body {
+            flex: 1;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+            position: relative; /* Ensure it's not absolute or fixed */
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">UserAuthenticationApp</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        </li>
+                        <!-- IDENTITY SCAFFOLDED ITEMS -->
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="nav-item">
+                                <a class="nav-link text-dark" href="javascript:document.getElementById('logoutForm').submit();">Logout</a>
+                            </form>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Manage Account</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container content">
+        @if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+        {
+            Layout = parentLayout.ToString();
+        }
+        else
+        {
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        }
     </div>
-</div>
 
-@section Scripts {
-    @RenderSection("Scripts", required: false)
-}
+    <!-- Footer Section -->
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - UserAuthenticationApp
+        </div>
+    </footer>
+
+    <!-- JavaScript Section -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
