@@ -67,6 +67,37 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await LoadSharedKeyAndQrCodeUriAsync(user);
+                return Page();
+            }
+
+            // Verify the code entered by the user
+            var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "Authenticator", Input.Code);
+            if (!isValid)
+            {
+                ModelState.AddModelError("Input.Code", "Invalid code.");
+                await LoadSharedKeyAndQrCodeUriAsync(user);
+                return Page();
+            }
+
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            _logger.LogInformation("User with ID '{UserId}' has enabled 2FA.", user.Id);
+
+            StatusMessage = "Your authenticator app has been verified.";
+
+            return RedirectToPage("./TwoFactorAuthentication");
+        }
+
         private async Task LoadSharedKeyAndQrCodeUriAsync(KieranProjectUser user)
         {
             var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
