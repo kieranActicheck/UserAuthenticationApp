@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using UserAuthenticationApp.Data;
+using UserAuthenticationApp.DTOs;
 
 namespace UserAuthenticationApp.Controllers
 {
@@ -30,8 +31,20 @@ namespace UserAuthenticationApp.Controllers
                 _logger.LogWarning("User not found with id: {Id}", id);
                 return NotFound();
             }
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Forename = user.Forename,
+                Surname = user.Surname,
+                CreatedDate = user.CreatedDate,
+                LastLoginDate = user.LastLoginDate
+            };
+
             _logger.LogInformation("User found with id: {Id}, UserName: {UserName}, Email: {Email}", id, user.UserName, user.Email);
-            return Ok(user);
+            return Ok(userDto);
         }
     }
 }
