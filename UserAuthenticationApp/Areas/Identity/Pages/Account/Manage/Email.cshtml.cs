@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using UserAuthenticationApp.Data;
@@ -93,10 +94,12 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { userId = user.Id, code = token },
                     protocol: Request.Scheme);
+
+                var emailContent = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>." + GetEmailSignatureHtml();
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
                     "Confirm your email",
-                    $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
+                    emailContent);
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
                 return RedirectToPage();
@@ -104,6 +107,16 @@ namespace UserAuthenticationApp.Areas.Identity.Pages.Account.Manage
 
             StatusMessage = "Your email is unchanged.";
             return RedirectToPage();
+        }
+
+        private string GetEmailSignature()
+        {
+            return "\n\nBest regards,\nActicheck Ltd\n";
+        }
+
+        private string GetEmailSignatureHtml()
+        {
+            return "<br><br>Best regards,<br>Acticheck Ltd<br>Contact Info<br>";
         }
     }
 }
