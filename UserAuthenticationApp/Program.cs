@@ -6,6 +6,7 @@ using UserAuthenticationApp.Data;
 using UserAuthenticationApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Serilog;
 
 namespace UserAuthenticationApp
 {
@@ -14,6 +15,16 @@ namespace UserAuthenticationApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Configure Serilog
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .WriteTo.Console()
+                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            // Add Serilog
+            builder.Host.UseSerilog();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
@@ -55,10 +66,6 @@ namespace UserAuthenticationApp
                 facebookOptions.AppId = appId;
                 facebookOptions.AppSecret = appSecret;
             });
-
-            // Configure logging
-            builder.Logging.ClearProviders(); // Clear existing logging providers
-            builder.Logging.AddConsole(); // Add console logger
 
             var app = builder.Build();
 
