@@ -34,5 +34,10 @@
         /// Gets or sets the maximum response time recorded.
         /// </summary>
         public double MaxResponseTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the payload of the log entry.
+        /// </summary>
+        public string Payload { get; set; }
     }
 }
