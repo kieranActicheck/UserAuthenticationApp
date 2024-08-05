@@ -29,8 +29,12 @@ namespace UserAuthenticationApp
             // Add services to the container.
             builder.Services.AddRazorPages();
 
-            // Configure DbContext
+            // Configure ApplicationDbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Configure LogContext
+            builder.Services.AddDbContext<LogContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add Identity services using KieranProjectUser
@@ -66,6 +70,9 @@ namespace UserAuthenticationApp
                 facebookOptions.AppId = appId;
                 facebookOptions.AppSecret = appSecret;
             });
+
+            // Register LogFileProcessor as a hosted service
+            builder.Services.AddHostedService<LogFileProcessor>();
 
             var app = builder.Build();
 
