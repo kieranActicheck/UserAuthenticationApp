@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -15,18 +16,18 @@ namespace UserAuthenticationApp.Services
     public class LogFileProcessor : BackgroundService
     {
         private readonly ILogger<LogFileProcessor> _logger;
-        private readonly LogContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly string _logFilePath = "Logs/log.txt";
 
         /// <summary>
         /// Initialises a new instance of the <see cref="LogFileProcessor"/> class.
         /// </summary>
         /// <param name="logger">The logger instance.</param>
-        /// <param name="context">The database context.</param>
-        public LogFileProcessor(ILogger<LogFileProcessor> logger, LogContext context)
+        /// <param name="scopeFactory">The service scope factory.</param>
+        public LogFileProcessor(ILogger<LogFileProcessor> logger, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
-            _context = context;
+            _scopeFactory = scopeFactory;
         }
 
         /// <summary>
@@ -41,23 +42,27 @@ namespace UserAuthenticationApp.Services
                 if (File.Exists(_logFilePath))
                 {
                     var lines = await File.ReadAllLinesAsync(_logFilePath, stoppingToken);
-                    foreach (var line in lines)
+                    using (var scope = _scopeFactory.CreateScope())
                     {
-                        var match = Regex.Match(line, @"Message (\d+) sent on ""(.+?)"" response time (\d+\.\d+) min (\d+\.\d+) max (\d+\.\d+)");
-                        if (match.Success)
+                        var context = scope.ServiceProvider.GetRequiredService<LogContext>();
+                        foreach (var line in lines)
                         {
-                            var logEntry = new LogEntry
+                            var match = Regex.Match(line, @"Message (\d+) sent on ""(.+?)"" response time (\d+\.\d+) min (\d+\.\d+) max (\d+\.\d+)");
+                            if (match.Success)
                             {
-                                MessageNumber = int.Parse(match.Groups[1].Value),
-                                Timestamp = DateTime.Parse(match.Groups[2].Value),
-                                ResponseTime = double.Parse(match.Groups[3].Value),
-                                MinResponseTime = double.Parse(match.Groups[4].Value),
-                                MaxResponseTime = double.Parse(match.Groups[5].Value)
-                            };
-                            _context.LogEntries.Add(logEntry);
+                                var logEntry = new LogEntry
+                                {
+                                    MessageNumber = int.Parse(match.Groups[1].Value),
+                                    Timestamp = DateTime.Parse(match.Groups[2].Value),
+                                    ResponseTime = double.Parse(match.Groups[3].Value),
+                                    MinResponseTime = double.Parse(match.Groups[4].Value),
+                                    MaxResponseTime = double.Parse(match.Groups[5].Value)
+                                };
+                                context.LogEntries.Add(logEntry);
+                            }
                         }
+                        await context.SaveChangesAsync(stoppingToken);
                     }
-                    await _context.SaveChangesAsync(stoppingToken);
                     File.Delete(_logFilePath); // Optionally delete the log file after processing
                 }
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken); // Adjust the delay as needed
