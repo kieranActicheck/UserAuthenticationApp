@@ -43,8 +43,8 @@ namespace UserAuthenticationApp.Controllers
             _minResponseTime = Math.Min(_minResponseTime, responseTime);
             _maxResponseTime = Math.Max(_maxResponseTime, responseTime);
 
-            _logger.LogInformation("Message {MessageNumber} sent on {Timestamp} response time {ResponseTime} min {MinResponseTime} max {MaxResponseTime}",
-                _messageCount, logData.Timestamp, responseTime, _minResponseTime, _maxResponseTime);
+            _logger.LogInformation("{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [INF] Message {MessageNumber} sent on \"{Timestamp:yyyy-MM-ddTHH:mm:ss.fffffff}\" response time {ResponseTime} min {MinResponseTime} max {MaxResponseTime}",
+                DateTime.Now, _messageCount, logData.Timestamp, responseTime, _minResponseTime, _maxResponseTime);
 
             return Ok(new
             {
