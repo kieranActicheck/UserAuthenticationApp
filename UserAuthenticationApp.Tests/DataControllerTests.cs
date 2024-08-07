@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UserAuthenticationApp.Controllers;
+using UserAuthenticationApp.Data;
 using Xunit;
 
 namespace UserAuthenticationApp.Tests
@@ -13,6 +14,7 @@ namespace UserAuthenticationApp.Tests
     {
         private readonly DataController _controller;
         private readonly Mock<ILogger<DataController>> _loggerMock;
+        private readonly TestLogContext _logContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataControllerTests"/> class.
@@ -20,7 +22,8 @@ namespace UserAuthenticationApp.Tests
         public DataControllerTests()
         {
             _loggerMock = new Mock<ILogger<DataController>>();
-            _controller = new DataController(_loggerMock.Object);
+            _logContext = new TestLogContext();
+            _controller = new DataController(_loggerMock.Object, _logContext);
         }
 
         /// <summary>
@@ -42,10 +45,21 @@ namespace UserAuthenticationApp.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<dynamic>(okResult.Value);
-            Assert.Equal(logData.Timestamp, returnValue.Timestamp);
-            Assert.Equal(1.23, returnValue.MinResponseTime);
-            Assert.Equal(1.23, returnValue.MaxResponseTime);
+            var returnValue = okResult.Value;
+            Assert.NotNull(returnValue);
+
+            // Use reflection to access properties of the anonymous type
+            var timestampProperty = returnValue.GetType().GetProperty("Timestamp");
+            var minResponseTimeProperty = returnValue.GetType().GetProperty("MinResponseTime");
+            var maxResponseTimeProperty = returnValue.GetType().GetProperty("MaxResponseTime");
+
+            Assert.NotNull(timestampProperty);
+            Assert.NotNull(minResponseTimeProperty);
+            Assert.NotNull(maxResponseTimeProperty);
+
+            Assert.Equal(logData.Timestamp, timestampProperty.GetValue(returnValue));
+            Assert.Equal(1.23, minResponseTimeProperty.GetValue(returnValue));
+            Assert.Equal(1.23, maxResponseTimeProperty.GetValue(returnValue));
         }
 
         /// <summary>
@@ -59,7 +73,7 @@ namespace UserAuthenticationApp.Tests
             {
                 Timestamp = DateTime.MinValue,
                 ResponseTime = 0,
-                Payload = null
+                Payload = string.Empty // Provide a non-null value
             };
 
             // Act

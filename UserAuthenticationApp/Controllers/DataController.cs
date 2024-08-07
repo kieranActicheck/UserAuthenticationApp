@@ -99,6 +99,6 @@ namespace UserAuthenticationApp.Controllers
         /// <summary>
         /// Gets or sets the payload of the log data.
         /// </summary>
-        public string Payload { get; set; }
+        public string? Payload { get; set; }
     }
 }

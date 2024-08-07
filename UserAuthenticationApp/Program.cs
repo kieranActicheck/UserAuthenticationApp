@@ -95,6 +95,19 @@ namespace UserAuthenticationApp
             app.MapControllers();
 
             app.Run();
+
+            // Test method to trigger breakpoints
+            //TestMsgCoordinator();
         }
+
+        ///// <summary>
+        ///// TEMPORARY method to test the MsgCoordinator class.
+        ///// </summary>
+        //private static void TestMsgCoordinator()
+        //{
+        //    var coordinator = new MsgCoordinator();
+        //    string message = "|BDSTAT:B4994C3317DF,316B6A00005508E718804F6B555D8233||";
+        //    coordinator.ProcessRequest(message);
+        //}
     }
 }

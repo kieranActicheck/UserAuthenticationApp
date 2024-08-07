@@ -1,4 +1,5 @@
 ﻿using UserAuthenticationApp.Data;
+using Microsoft.Extensions.Logging;
 
 namespace UserAuthenticationApp.Services
 {
@@ -11,7 +12,7 @@ namespace UserAuthenticationApp.Services
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="BandDataLogger"/> class.
+        /// Initializes a new instance of the <see cref="BandDataLogger"/> class.
         /// </summary>
         /// <param name="bandData">The BandData instance to log.</param>
         /// <param name="logger">The logger instance to use for logging.</param>
@@ -26,25 +27,30 @@ namespace UserAuthenticationApp.Services
         /// </summary>
         public void LogBandData()
         {
-            _logger.LogInformation("Logging BandData properties:");
-            _logger.LogInformation($"NeedConfig: {_bandData.NeedConfig}");
-            _logger.LogInformation($"PassCode: {_bandData.PassCode}");
-            _logger.LogInformation($"BandEncKey: {_bandData.BandEncKey}");
-            _logger.LogInformation($"NeedPassCode: {_bandData.NeedPassCode}");
-            _logger.LogInformation($"NeedKey: {_bandData.NeedKey}");
-            _logger.LogInformation($"FallMode: {_bandData.FallModeProperty}");
-            _logger.LogInformation($"ShakeAfterBuzz: {_bandData.shakeAfterBuzz}");
-            _logger.LogInformation($"PanicButton: {_bandData.panicButton}");
-            _logger.LogInformation($"SmokeAlarm: {_bandData.smokeAlarm}");
-            _logger.LogInformation($"HeatAlarm: {_bandData.heatAlarm}");
-            _logger.LogInformation($"AppBandStatusRequest: {_bandData.appBandStatusRequest}");
-            _logger.LogInformation($"IsPanicButton: {_bandData.isPanicButton}");
-            _logger.LogInformation($"BandWatchdog: {_bandData.bandWatchdog}");
-            _logger.LogInformation($"CosmosData: {_bandData.CosmosData}");
-            foreach (var tag in _bandData.Tags)
+            if (_bandData == null)
             {
-                _logger.LogInformation($"Tag: {tag.Key} - {tag.Value}");
+                _logger.LogInformation("BandData is null.");
+                return;
             }
+            _logger.LogInformation("Logging BandData properties:");
+            _logger.LogInformation($"DeviceId: {_bandData.DeviceId}");
+            _logger.LogInformation($"DateOfPacket: {_bandData.DateOfPacket}");
+            _logger.LogInformation($"Key1: {_bandData.Key1}");
+            _logger.LogInformation($"Key2: {_bandData.Key2}");
+            _logger.LogInformation($"BlueToothLink: {_bandData.BlueToothLink}");
+            _logger.LogInformation($"Temperature: {_bandData.Temperature}");
+            _logger.LogInformation($"Presence: {_bandData.Presence}");
+            _logger.LogInformation($"AccelX: {_bandData.AccelX}");
+            _logger.LogInformation($"AccelY: {_bandData.AccelY}");
+            _logger.LogInformation($"AccelZ: {_bandData.AccelZ}");
+            _logger.LogInformation($"MovementData: {_bandData.MovementData}");
+            _logger.LogInformation($"BatteryVoltage: {_bandData.BatteryVoltage}");
+            _logger.LogInformation($"Link: {_bandData.Link}");
+            _logger.LogInformation($"Link2: {_bandData.Link2}");
+            _logger.LogInformation($"Count: {_bandData.Count}");
+            _logger.LogInformation($"ISMRadioLink: {_bandData.ISMRadioLink}");
+            _logger.LogInformation($"OnWrist: {_bandData.OnWrist}");
+            _logger.LogInformation($"MovementTrigger: {_bandData.MovementTrigger}");
         }
     }
 }
