@@ -17,7 +17,7 @@ namespace UserAuthenticationApp.Tests
         private readonly TestLogContext _logContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataControllerTests"/> class.
+        /// Initialises a new instance of the <see cref="DataControllerTests"/> class.
         /// </summary>
         public DataControllerTests()
         {
