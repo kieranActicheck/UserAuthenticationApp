@@ -65,15 +65,18 @@ namespace UserAuthenticationApp.Tests
         /// <summary>
         /// Tests that the <see cref="DataController.Receive"/> method returns a <see cref="BadRequestObjectResult"/> when invalid log data is provided.
         /// </summary>
-        [Fact]
-        public void Receive_InvalidLogData_ReturnsBadRequest()
+        [Theory]
+        [InlineData(null, 1.23, "SamplePayload")] // Null timestamp
+        [InlineData("0001-01-01T00:00:00Z", 0, "SamplePayload")] // Min timestamp and zero response time
+        [InlineData("2023-01-01T00:00:00Z", 1.23, "")] // Empty payload
+        public void Receive_InvalidLogData_ReturnsBadRequest(string timestamp, double responseTime, string payload)
         {
             // Arrange
             var logData = new LogData
             {
-                Timestamp = DateTime.MinValue,
-                ResponseTime = 0,
-                Payload = string.Empty // Provide a non-null value
+                Timestamp = timestamp == null ? DateTime.MinValue : DateTime.Parse(timestamp),
+                ResponseTime = responseTime,
+                Payload = payload
             };
 
             // Act

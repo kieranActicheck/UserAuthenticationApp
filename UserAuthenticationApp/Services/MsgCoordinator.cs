@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using UserAuthenticationApp.Data;
+using Xunit.Abstractions;
 
 namespace UserAuthenticationApp.Services
 {
@@ -10,6 +11,13 @@ namespace UserAuthenticationApp.Services
     /// </summary>
     public class MsgCoordinator
     {
+        private readonly ITestOutputHelper _output;
+
+        public MsgCoordinator(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         /// <summary>
         /// Processes the incoming message.
         /// </summary>
@@ -45,51 +53,66 @@ namespace UserAuthenticationApp.Services
         /// <param name="message">The message part to process.</param>
         private void Populate(string message)
         {
-            // Example message: |BDSTAT:B4994C3317DF,316B6A00005508E718804F6B555D8233||
+            _output.WriteLine($"Processing message part: {message}");
             var keyValue = message.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
             if (keyValue.Length == 2 && keyValue[0] == "BDSTAT")
             {
                 var values = keyValue[1].Split(',', StringSplitOptions.RemoveEmptyEntries);
+
                 if (values.Length == 2 && IsValidSubParts(values))
                 {
                     var bandData = new BandData
                     {
-                        DeviceId = "1234567890", // Fake DeviceId
-                        DateOfPacket = DateTime.Now, // Current DateTime
+                        DeviceId = values[0].Substring(0, 12), // Extract DeviceId from the message
+                        DateOfPacket = DateTime.Now,
                     };
 
-                    // Ensure the values[0] is long enough to avoid ArgumentOutOfRangeException
-                    if (values[0].Length >= 28)
+                    try
                     {
-                        bandData.Key1 = int.Parse(values[0].Substring(0, 2), NumberStyles.HexNumber);
-                        bandData.Key2 = int.Parse(values[0].Substring(2, 2), NumberStyles.HexNumber);
-                        bandData.BlueToothLink = int.Parse(values[0].Substring(4, 2), NumberStyles.HexNumber);
-                        bandData.Temperature = int.Parse(values[0].Substring(6, 2), NumberStyles.HexNumber) / 10.0;
-                        bandData.Presence = int.Parse(values[0].Substring(8, 2), NumberStyles.HexNumber);
-                        bandData.AccelX = int.Parse(values[0].Substring(10, 2), NumberStyles.HexNumber);
-                        bandData.AccelY = int.Parse(values[0].Substring(12, 2), NumberStyles.HexNumber);
-                        bandData.AccelZ = int.Parse(values[0].Substring(14, 2), NumberStyles.HexNumber);
-                        bandData.MovementData = int.Parse(values[0].Substring(16, 2), NumberStyles.HexNumber);
-                        bandData.BatteryVoltage = int.Parse(values[0].Substring(18, 2), NumberStyles.HexNumber) / 10.0;
-                        bandData.Link = int.Parse(values[0].Substring(20, 2), NumberStyles.HexNumber);
-                        bandData.Link2 = int.Parse(values[0].Substring(22, 2), NumberStyles.HexNumber);
-                        bandData.Count = int.Parse(values[0].Substring(24, 2), NumberStyles.HexNumber);
-                        bandData.ISMRadioLink = int.Parse(values[0].Substring(26, 2), NumberStyles.HexNumber);
-                    }
+                        // Check if the length of values[1] is at least 30 characters
+                        if (values[1].Length >= 30)
+                        {
+                            bandData.Status = int.Parse(values[1].Substring(0, 2), NumberStyles.HexNumber);
+                            bandData.Temperature = int.Parse(values[1].Substring(2, 2), NumberStyles.HexNumber);
+                            bandData.Presence = int.Parse(values[1].Substring(4, 2), NumberStyles.HexNumber);
+                            bandData.Keys = int.Parse(values[1].Substring(6, 2), NumberStyles.HexNumber);
+                            bandData.MovementData = int.Parse(values[1].Substring(8, 4), NumberStyles.HexNumber);
+                            bandData.AccelX = int.Parse(values[1].Substring(12, 2), NumberStyles.HexNumber);
+                            bandData.AccelY = int.Parse(values[1].Substring(14, 2), NumberStyles.HexNumber);
+                            bandData.AccelZ = int.Parse(values[1].Substring(16, 2), NumberStyles.HexNumber);
+                            bandData.Voltage = int.Parse(values[1].Substring(18, 2), NumberStyles.HexNumber);
+                            bandData.Link = int.Parse(values[1].Substring(20, 2), NumberStyles.HexNumber);
+                            bandData.Link2 = int.Parse(values[1].Substring(22, 2), NumberStyles.HexNumber);
+                            bandData.Fallmode = int.Parse(values[1].Substring(24, 2), NumberStyles.HexNumber);
+                            bandData.Count = int.Parse(values[1].Substring(26, 2), NumberStyles.HexNumber);
+                            bandData.Passcode = int.Parse(values[1].Substring(28, 4), NumberStyles.HexNumber);
 
-                    // Ensure the values[1] is long enough to avoid IndexOutOfRangeException
-                    if (values[1].Length >= 2)
+                            // Log the parsed values
+                            _output.WriteLine($"Status: {bandData.Status}, Temperature: {bandData.Temperature}, Presence: {bandData.Presence}, Keys: {bandData.Keys}, MovementData: {bandData.MovementData}, AccelX: {bandData.AccelX}, AccelY: {bandData.AccelY}, AccelZ: {bandData.AccelZ}, Voltage: {bandData.Voltage}, Link: {bandData.Link}, Link2: {bandData.Link2}, Fallmode: {bandData.Fallmode}, Count: {bandData.Count}, Passcode: {bandData.Passcode}");
+                        }
+                        else
+                        {
+                            // Log a message if the length is less than expected
+                            _output.WriteLine($"Message part length is less than expected: {values[1].Length}");
+                        }
+
+                        _output.WriteLine($"Parsed BandData: {bandData.DeviceId}, {bandData.Status}, {bandData.Temperature}, {bandData.Presence}, {bandData.Keys}, {bandData.MovementData}, {bandData.AccelX}, {bandData.AccelY}, {bandData.AccelZ}, {bandData.Voltage}, {bandData.Link}, {bandData.Link2}, {bandData.Fallmode}, {bandData.Count}, {bandData.Passcode}");
+                        SendBandData(bandData);
+                    }
+                    catch (Exception ex)
                     {
-                        bandData.OnWrist = values[1][0] == '1';
-                        bandData.MovementTrigger = values[1][1] == '1';
+                        _output.WriteLine($"Error parsing message: {ex.Message}");
                     }
-
-                    // Log the bandData for debugging
-                    Console.WriteLine($"DeviceId: {bandData.DeviceId}, Key1: {bandData.Key1}, Key2: {bandData.Key2}, BlueToothLink: {bandData.BlueToothLink}, Temperature: {bandData.Temperature}");
-
-                    // Send the BandData object to another application
-                    SendBandData(bandData);
                 }
+                else
+                {
+                    _output.WriteLine("Invalid sub-parts in the message.");
+                }
+            }
+            else
+            {
+                _output.WriteLine("Invalid message format.");
             }
         }
 

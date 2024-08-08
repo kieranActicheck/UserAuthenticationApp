@@ -33,23 +33,24 @@ namespace UserAuthenticationApp.Services
                 return;
             }
             _logger.LogInformation("Logging BandData properties:");
+            _logger.LogInformation($"ID: {_bandData.ID}");
             _logger.LogInformation($"DeviceId: {_bandData.DeviceId}");
-            _logger.LogInformation($"DateOfPacket: {_bandData.DateOfPacket}");
-            _logger.LogInformation($"Key1: {_bandData.Key1}");
-            _logger.LogInformation($"Key2: {_bandData.Key2}");
-            _logger.LogInformation($"BlueToothLink: {_bandData.BlueToothLink}");
+            _logger.LogInformation($"Status: {_bandData.Status}");
             _logger.LogInformation($"Temperature: {_bandData.Temperature}");
             _logger.LogInformation($"Presence: {_bandData.Presence}");
+            _logger.LogInformation($"Keys: {_bandData.Keys}");
+            _logger.LogInformation($"MovementData: {_bandData.MovementData}");
             _logger.LogInformation($"AccelX: {_bandData.AccelX}");
             _logger.LogInformation($"AccelY: {_bandData.AccelY}");
             _logger.LogInformation($"AccelZ: {_bandData.AccelZ}");
-            _logger.LogInformation($"MovementData: {_bandData.MovementData}");
-            _logger.LogInformation($"BatteryVoltage: {_bandData.BatteryVoltage}");
+            _logger.LogInformation($"Voltage: {_bandData.Voltage}");
             _logger.LogInformation($"Link: {_bandData.Link}");
             _logger.LogInformation($"Link2: {_bandData.Link2}");
+            _logger.LogInformation($"Fallmode: {_bandData.Fallmode}");
             _logger.LogInformation($"Count: {_bandData.Count}");
-            _logger.LogInformation($"ISMRadioLink: {_bandData.ISMRadioLink}");
+            _logger.LogInformation($"Passcode: {_bandData.Passcode}");
             _logger.LogInformation($"OnWrist: {_bandData.OnWrist}");
+            _logger.LogInformation($"DateOfPacket: {_bandData.DateOfPacket}");
             _logger.LogInformation($"MovementTrigger: {_bandData.MovementTrigger}");
         }
     }

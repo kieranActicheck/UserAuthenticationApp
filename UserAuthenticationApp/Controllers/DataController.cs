@@ -37,7 +37,7 @@ namespace UserAuthenticationApp.Controllers
         [HttpPost("receive")]
         public IActionResult Receive([FromBody] LogData logData)
         {
-            if (logData == null || logData.Timestamp == DateTime.MinValue || logData.ResponseTime == 0)
+            if (logData == null || logData.Timestamp == DateTime.MinValue || logData.ResponseTime <= 0 || string.IsNullOrEmpty(logData.Payload))
             {
                 return BadRequest("Invalid log data");
             }
