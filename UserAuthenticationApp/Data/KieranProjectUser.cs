@@ -21,12 +21,11 @@ namespace UserAuthenticationApp.Data
         /// <summary>
         /// Gets or sets the forename of the user.
         /// </summary>
-        public string Forename { get; set; }
+        public string Forename { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the surname of the user.
         /// </summary>
-        public string Surname { get; set; }
-
+        public string Surname { get; set; } = string.Empty;
     }
 }

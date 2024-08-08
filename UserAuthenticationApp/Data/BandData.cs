@@ -6,7 +6,12 @@
     public partial class BandData
     {
         public int ID { get; set; }
-        public string DeviceId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device ID.
+        /// </summary>
+        public string DeviceId { get; set; } = string.Empty; // Initialise with a default value
+
         public int Status { get; set; }
         public int Temperature { get; set; }
         public int Presence { get; set; }

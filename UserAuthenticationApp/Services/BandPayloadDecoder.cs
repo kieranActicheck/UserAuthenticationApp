@@ -12,102 +12,102 @@ namespace ActiCheckCore
         /// <summary>
         /// Band Status Information.
         /// </summary>
-        public string BDSTAT { get; set; }
+        public string BDSTAT { get; set; } = string.Empty;
 
         /// <summary>
         /// Band Engineering Data.
         /// </summary>
-        public string BDENGI { get; set; }
+        public string BDENGI { get; set; } = string.Empty;
 
         /// <summary>
         /// Band Boot Information.
         /// </summary>
-        public string BDBOOT { get; set; }
+        public string BDBOOT { get; set; } = string.Empty;
 
         /// <summary>
         /// Band Shock Information.
         /// </summary>
-        public string BDSHCK { get; set; }
+        public string BDSHCK { get; set; } = string.Empty;
 
         /// <summary>
         /// Base Encryption Information.
         /// </summary>
-        public string BSENCR { get; set; }
+        public string BSENCR { get; set; } = string.Empty;
 
         /// <summary>
         /// Radio Status Link Information.
         /// </summary>
-        public string BSLINK { get; set; }
+        public string BSLINK { get; set; } = string.Empty;
 
         /// <summary>
         /// Base Boot Information.
         /// </summary>
-        public string BSBOOT { get; set; }
+        public string BSBOOT { get; set; } = string.Empty;
 
         /// <summary>
         /// Base Status Information.
         /// </summary>
-        public string BSSTAT { get; set; }
+        public string BSSTAT { get; set; } = string.Empty;
 
         /// <summary>
         /// Base Location Data.
         /// </summary>
-        public string BSLOCA { get; set; }
+        public string BSLOCA { get; set; } = string.Empty;
 
         /// <summary>
         /// Base Engineering Data.
         /// </summary>
-        public string BSENGI { get; set; }
+        public string BSENGI { get; set; } = string.Empty;
 
         /// <summary>
         /// Base GSM Cell Modem Information.
         /// </summary>
-        public string BSCELL { get; set; }
+        public string BSCELL { get; set; } = string.Empty;
 
         /// <summary>
         /// Phone Information.
         /// </summary>
-        public string PHONE { get; set; }
+        public string PHONE { get; set; } = string.Empty;
 
         /// <summary>
         /// Phone Number Check Information.
         /// </summary>
-        public string PHONENUMBERCHECK { get; set; }
+        public string PHONENUMBERCHECK { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 1 of the BDSTAT payload.
         /// </summary>
-        public string Part1 { get; set; }
+        public string Part1 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 2 of the BDSTAT payload.
         /// </summary>
-        public string Part2 { get; set; }
+        public string Part2 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 3 of the BDSTAT payload.
         /// </summary>
-        public string Part3 { get; set; }
+        public string Part3 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 4 of the BDSTAT payload.
         /// </summary>
-        public string Part4 { get; set; }
+        public string Part4 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 5 of the BDSTAT payload.
         /// </summary>
-        public string Part5 { get; set; }
+        public string Part5 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 6 of the BDSTAT payload.
         /// </summary>
-        public string Part6 { get; set; }
+        public string Part6 { get; set; } = string.Empty;
 
         /// <summary>
         /// Part 7 of the BDSTAT payload.
         /// </summary>
-        public string Part7 { get; set; }
+        public string Part7 { get; set; } = string.Empty;
 
         /// <summary>
         /// Decodes the given payload string into its respective parts.
@@ -207,11 +207,10 @@ namespace ActiCheckCore
                                 PHONE = value;
                                 writer.WriteLine($"PHONE: {PHONE}");
                                 break;
-                            case "SMSNUMBERCHECK":
+                            case "PHONENUMBERCHECK":
                                 PHONENUMBERCHECK = value;
                                 writer.WriteLine($"PHONENUMBERCHECK: {PHONENUMBERCHECK}");
                                 break;
-                                // Add more cases as needed
                         }
                     }
                 }

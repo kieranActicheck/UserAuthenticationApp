@@ -8,6 +8,6 @@ namespace UserAuthenticationApp.Data
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
-        public bool TwoFactorEnabled { get; set; }
+        public override bool TwoFactorEnabled { get; set; }
     }
 }
